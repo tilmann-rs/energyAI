@@ -4,3 +4,6 @@
 [submodule "MTGNN"]
 	path = MTGNN
 	url = https://github.com/nnzhan/MTGNN.git
+[submodule "StemGNN"]
+	path = StemGNN
+	url = https://github.com/microsoft/StemGNN.git
