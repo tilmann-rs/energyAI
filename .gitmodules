@@ -1,3 +1,6 @@
 [submodule "Time-Series-Library"]
 	path = Time-Series-Library
 	url = https://github.com/thuml/Time-Series-Library.git
+[submodule "MTGNN"]
+	path = MTGNN
+	url = https://github.com/nnzhan/MTGNN.git
