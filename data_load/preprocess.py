@@ -69,12 +69,11 @@ def preprocess_data(df):
     return df
 
 
-def country_years(country, start_year, end_year, source, target):
+def country_years_sources(country, start_year, end_year, features, source, target, index=False):
     # Define the file path pattern and find all matching files
     source_files = f"{source}/*.csv"
     files = glob.glob(source_files)
-    target_file = f"{target}/{country}/{country}_{start_year}-{end_year}.csv"
-    df = None
+    clean_data = None
     os.makedirs(f"{target}/{country}", exist_ok=True)
 
     # Filter files based on the year range
@@ -91,9 +90,17 @@ def country_years(country, start_year, end_year, source, target):
     if filtered_files:
         all_data = pd.concat([pd.read_csv(f) for f in filtered_files])
         clean_data = preprocess_data(all_data)
-        clean_data.to_csv(target_file, index=True)   # save the file
-        df = pd.read_csv(target_file)
-    else:
-        print("No files found within the specified year range. Its 2015 to 2024 available")
+        # save all available features or
+        if features is None:
+            target_file = f"{target}/{country}/{country}_{start_year}-{end_year}.csv"
+            clean_data.to_csv(target_file, index=index)
+        # save specific features
+        else:
+            energy_sources_str = "_".join([feature.replace(" ", "") for feature in features])
+            target_file = f"{target}/{country}/{country}_{start_year}-{end_year}_{energy_sources_str}.csv"
+            clean_data[features].to_csv(target_file, index=False)
 
-    return df
+    else:
+        print("No files found within the specified year range. Normally its 2015 to 2024 available")
+
+    return clean_data

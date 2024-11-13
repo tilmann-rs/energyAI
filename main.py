@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import torch
 
-from data_load.preprocess import preprocess_data, country_years
-from data_load.visualize import plot_data
-from data_load.data_analytics import mean_seasonality, check_missing_values, check_monotonicity
-from model.simple_tsf import sarima, var_forecast
-from model.TimesNet import Model as TimesNet
+from data_load.preprocess import preprocess_data, country_years_sources
+# from data_load.visualize import plot_data
+# from data_load.data_analytics import mean_seasonality, check_missing_values, check_monotonicity
+# from model.simple_tsf import sarima, var_forecast
+# from model.TimesNet import Model as TimesNet
 
 # shortened_columns = {
 #     "Biomass  - Actual Aggregated [MW]": "Biomass",
@@ -31,17 +31,14 @@ from model.TimesNet import Model as TimesNet
 #     "Wind Onshore  - Actual Aggregated [MW]": "Wind On"
 # }
 
-country = "Germany"
-year_from = "2023"
+# GET CLEAN DATA
+country = "Portugal"
+year_from = "2015"
 year_to = "2023"
 path = 'data/Big Electricity'
+energy_sources = ["Wind On", "Solar"]
 
-df = country_years(country, year_from, year_to, f'../data/{country}', path)
-
-energy_sources = ["Wind On"]
-energy_sources_str = "_".join([source.replace(" ", "") for source in energy_sources])
-# save specific source
-df[['date'] + energy_sources].to_csv(f"{path}/{country}/{country}_{year_from}-{year_to}_{energy_sources_str}.csv", index=False)
+df = country_years_sources(country, year_from, year_to, energy_sources, f'data/raw/{country}', target=path, index=False)
 
 
 # df = mean_seasonality(df, 'W')
