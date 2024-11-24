@@ -7,3 +7,6 @@
 [submodule "StemGNN"]
 	path = StemGNN
 	url = https://github.com/microsoft/StemGNN.git
+[submodule "TPGNN"]
+	path = TPGNN
+	url = https://github.com/zyplanet/TPGNN.git

@@ -57,7 +57,7 @@ def preprocess_data(df):
     for col in df.columns[2:]:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    df = df.groupby(df.index).mean() # Average duplicate entries
+    df = df.groupby(df.index).mean()  # Average duplicate entries
 
     df = df.asfreq('15min')  # Set frequency to 15 minutes
 
@@ -69,12 +69,12 @@ def preprocess_data(df):
     return df
 
 
-def country_years_sources(country, start_year, end_year, features, source, target, index=False):
+def prepare_energy_data(country, start_year, end_year, features, source, target, correlation_calc=False, time_stamp_saved_seperately=False, index=False, header=False):
     # Define the file path pattern and find all matching files
     source_files = f"{source}/*.csv"
     files = glob.glob(source_files)
     clean_data = None
-    os.makedirs(f"{target}/{country}", exist_ok=True)
+    os.makedirs(f"{target}", exist_ok=True)
 
     # Filter files based on the year range
     filtered_files = []
@@ -86,21 +86,45 @@ def country_years_sources(country, start_year, end_year, features, source, targe
             if int(start_year) <= file_year <= int(end_year):
                 filtered_files.append(file)
 
-    # Concatenate and save if any files match
+    # Concatenate
     if filtered_files:
         all_data = pd.concat([pd.read_csv(f) for f in filtered_files])
         clean_data = preprocess_data(all_data)
-        # save all available features or
+
+        # SAVE all available features or
         if features is None:
-            target_file = f"{target}/{country}/{country}_{start_year}-{end_year}.csv"
-            clean_data.to_csv(target_file, index=index)
-        # save specific features
+            file_name = f"{country}_{start_year}-{end_year}.csv"
+            clean_data.to_csv(f"{target}/" + file_name, index=index, header=header)
+
+            if correlation_calc:
+                save_correlation(clean_data, target, file_name)
+            if time_stamp_saved_seperately:
+                separate_timestamps(clean_data, target, file_name)
+
+        # SAVE specific features
         else:
             energy_sources_str = "_".join([feature.replace(" ", "") for feature in features])
-            target_file = f"{target}/{country}/{country}_{start_year}-{end_year}_{energy_sources_str}.csv"
-            clean_data[features].to_csv(target_file, index=False)
+            file_name = f"{country}_{start_year}-{end_year}_{energy_sources_str}.csv"
+            clean_data[features].to_csv(f"{target}/" + file_name, index=False, header=header)
+
+            if correlation_calc:
+                save_correlation(clean_data, target, file_name)
+            if time_stamp_saved_seperately:
+                separate_timestamps(clean_data, target, file_name)
 
     else:
         print("No files found within the specified year range. Normally its 2015 to 2024 available")
 
     return clean_data
+
+
+def save_correlation(df, target, file):
+    corr_mat = df.corr()
+    target_file_corr = "corr_" + file
+    corr_mat.to_csv(f"{target}/Correlations/" + target_file_corr, index=False, header=False)
+
+def separate_timestamps(df, target, file):
+    # delete / reset from index as well?
+    clean_data_no_index = df.reset_index()
+    target_file_timestamps = "ts_" + file
+    clean_data_no_index['date'].to_csv(f"{target}/Timestamps/" + target_file_timestamps, index=False, header=False)

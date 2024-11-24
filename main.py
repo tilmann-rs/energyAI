@@ -1,7 +1,5 @@
-import matplotlib.pyplot as plt
-import torch
+from data_load.preprocess import prepare_energy_data
 
-from data_load.preprocess import preprocess_data, country_years_sources
 # from data_load.visualize import plot_data
 # from data_load.data_analytics import mean_seasonality, check_missing_values, check_monotonicity
 # from model.simple_tsf import sarima, var_forecast
@@ -32,17 +30,23 @@ from data_load.preprocess import preprocess_data, country_years_sources
 # }
 
 # GET CLEAN DATA
-country = "Portugal"
+country = "Germany"
 year_from = "2015"
 year_to = "2023"
 path = 'data/Big Electricity'
-energy_sources = ["Wind On", "Solar"]
+energy_sources = ["Solar", "Wind On"]  # In the right order as above!
 
-df = country_years_sources(country, year_from, year_to, energy_sources, f'data/raw/{country}', target=path, index=False)
-
+df = prepare_energy_data(country,
+                         year_from, year_to,
+                         energy_sources,
+                         f'data/raw/{country}',
+                         target=path,
+                         correlation_calc=True,
+                         time_stamp_saved_seperately=True,
+                         index=False,
+                         header=False)
 
 # df = mean_seasonality(df, 'W')
 # plot_data(df, energy_sources)
 
 # adf_test(df, energy_sources)
-
