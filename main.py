@@ -34,7 +34,7 @@ country = "Germany"
 year_from = "2015"
 year_to = "2023"
 path = 'data/Big Electricity'
-energy_sources = ["Solar", "Wind On"]  # In the right order as above!
+energy_sources = None # ["Solar", "Wind On"]  # In the right order as above!
 
 df = prepare_energy_data(country,
                          year_from, year_to,

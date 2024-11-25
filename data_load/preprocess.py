@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pandas as pd
 import glob
 import re
@@ -93,8 +94,8 @@ def prepare_energy_data(country, start_year, end_year, features, source, target,
 
         # SAVE all available features or
         if features is None:
-            file_name = f"{country}_{start_year}-{end_year}.csv"
-            clean_data.to_csv(f"{target}/" + file_name, index=index, header=header)
+            file_name = f"{country}_{start_year}-{end_year}"
+            clean_data.to_csv(f"{target}/{file_name}.csv", index=index, header=header)
 
             if correlation_calc:
                 save_correlation(clean_data, target, file_name)
@@ -104,8 +105,8 @@ def prepare_energy_data(country, start_year, end_year, features, source, target,
         # SAVE specific features
         else:
             energy_sources_str = "_".join([feature.replace(" ", "") for feature in features])
-            file_name = f"{country}_{start_year}-{end_year}_{energy_sources_str}.csv"
-            clean_data[features].to_csv(f"{target}/" + file_name, index=False, header=header)
+            file_name = f"{country}_{start_year}-{end_year}_{energy_sources_str}"
+            clean_data[features].to_csv(f"{target}/{file_name}.csv", index=False, header=header)
 
             if correlation_calc:
                 save_correlation(clean_data, target, file_name)
@@ -121,10 +122,16 @@ def prepare_energy_data(country, start_year, end_year, features, source, target,
 def save_correlation(df, target, file):
     corr_mat = df.corr()
     target_file_corr = "corr_" + file
-    corr_mat.to_csv(f"{target}/Correlations/" + target_file_corr, index=False, header=False)
+    corr_mat.to_csv(f"{target}/Correlations/{target_file_corr}.csv", index=False, header=False)
 
 def separate_timestamps(df, target, file):
-    # delete / reset from index as well?
+    # save as csv and npy
     clean_data_no_index = df.reset_index()
+
     target_file_timestamps = "ts_" + file
-    clean_data_no_index['date'].to_csv(f"{target}/Timestamps/" + target_file_timestamps, index=False, header=False)
+    clean_data_no_index['date'].to_csv(f"{target}/Timestamps/{target_file_timestamps}.csv", index=False, header=False)
+
+    timestamps = clean_data_no_index['date'].values
+    timestamps_unix = timestamps.astype('datetime64[s]').view(np.int64)
+    target_file_timestamps = "ts_" + file
+    np.save(f"{target}/Timestamps/{target_file_timestamps}.npy", timestamps_unix)
