@@ -95,24 +95,21 @@ def prepare_energy_data(country, start_year, end_year, features, source, target,
         # SAVE all available features or
         if features is None:
             file_name = f"{country}_{start_year}-{end_year}"
-            clean_data.to_csv(f"{target}/{file_name}.csv", index=index, header=header)
-
-            if correlation_calc:
-                save_correlation(clean_data, target, file_name)
-            if time_stamp_saved_seperately:
-                separate_timestamps(clean_data, target, file_name)
+            df = clean_data
 
         # SAVE specific features
         else:
             energy_sources_str = "_".join([feature.replace(" ", "") for feature in features])
             file_name = f"{country}_{start_year}-{end_year}_{energy_sources_str}"
-            clean_data[features].to_csv(f"{target}/{file_name}.csv", index=False, header=header)
+            df = clean_data[features]
 
-            if correlation_calc:
-                save_correlation(clean_data, target, file_name)
-            if time_stamp_saved_seperately:
-                separate_timestamps(clean_data, target, file_name)
+        df.to_csv(f"{target}/{file_name}.csv", index=index, header=header)
+        if correlation_calc:
+            save_correlation(df, target, file_name)
+        if time_stamp_saved_seperately:
+            separate_timestamps(df, target, file_name)
 
+        print(f"Files saved at {target}.")
     else:
         print("No files found within the specified year range. Normally its 2015 to 2024 available")
 

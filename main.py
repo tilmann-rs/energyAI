@@ -31,10 +31,12 @@ from data_load.preprocess import prepare_energy_data
 
 # GET CLEAN DATA
 country = "Germany"
-year_from = "2015"
+year_from = "2023"
 year_to = "2023"
 path = 'data/Big Electricity'
-energy_sources = None # ["Solar", "Wind On"]  # In the right order as above!
+
+# In the right order as above!
+energy_sources = ["Biomass", "Gas", "Hard Coal", "Oil", "Hydr PS", "Hydr PS", "Hydr River", "Water Res", "Solar", "Wind Off", "Wind On"]
 
 df = prepare_energy_data(country,
                          year_from, year_to,
