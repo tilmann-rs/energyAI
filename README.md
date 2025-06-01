@@ -13,6 +13,8 @@ A Python project for loading, preprocessing, analyzing, and forecasting energy g
 
 
 
-
+<br>
 ![grafik](https://github.com/user-attachments/assets/6389df4c-14a5-4b88-9993-7b9f7c51880a)
+<br>
 *Net energy generation by source and consumption over a 24-hour period of ENTSO-E transperancy platform*
+<br>
