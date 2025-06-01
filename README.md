@@ -3,7 +3,7 @@
 A Python project for loading, preprocessing, analyzing, and forecasting energy generation and consumption data, with a focus on time series modeling using classic and deep learning-based approaches.
 
 - **Data Loading & Preprocessing:** Utilities for cleaning and preparing large-scale energy datasets from ENTSO-E platform.
-- 
+
 - **Time Series Forecasting:** Implements classical models (SARIMA, VAR) and deep learning models (Transformers, TimesNet) for forecasting, imputation, anomaly detection, and classification.
 - `data_load/preprocess.py` – Data cleaning and transformation.
 - `model/simple_tsf.py` – Classical time series models.
